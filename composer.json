@@ -1,0 +1,15 @@
+{
+    "name": "gaus/crash-test",
+    "autoload": {
+        "psr-4": {
+            "Up\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yulya Gaus",
+            "email": "yulya.yulya.010202@gmail.com"
+        }
+    ],
+    "require": {}
+}
