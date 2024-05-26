@@ -5,7 +5,7 @@ namespace Up\Cache;
 use Closure;
 use Up\Service\ConfigurationService;
 
-class FileCache implements CacheInterface
+class FileCache extends Cache
 {
 	public static string $cacheDir;
 
@@ -46,25 +46,11 @@ class FileCache implements CacheInterface
 
 		if (time() >= $ttl)
 		{
+			unlink($path);
 			return null;
 		}
 
 		return $data['data'];
-	}
-
-	public function remember(string $key, int $ttl, Closure $fetcher): mixed
-	{
-		$data = $this->get($key);
-
-		if ($data === null)
-		{
-			$value = $fetcher();
-			$this->set($key, $value, $ttl);
-
-			return $value;
-		}
-
-		return $data;
 	}
 
 	public function delete(string $key): void

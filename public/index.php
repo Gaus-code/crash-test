@@ -24,6 +24,7 @@ $cache2 = new \Up\Cache\RedisCache();
 
 $cache2->set('hello', 'world', 2024);
 $redisValue = $cache2->get('hello');
+echo '<br>';
 echo $redisValue;
 
 $cache2->delete($redisValue);

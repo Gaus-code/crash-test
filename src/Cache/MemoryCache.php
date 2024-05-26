@@ -4,7 +4,7 @@ namespace Up\Cache;
 
 use Closure;
 
-class MemoryCache implements CacheInterface
+class MemoryCache extends Cache
 {
 	private static array $cache = [];
 	public function set(string $key, mixed $value, int $ttl): void
@@ -25,27 +25,13 @@ class MemoryCache implements CacheInterface
 		$data = self::$cache[$key];
 		$ttl = $data['ttl'];
 
-		if (time() < $ttl)
+		if (time() <= $ttl)
 		{
+			unset(self::$cache[$key]);
 			return null;
 		}
 
 		return $data['data'];
-	}
-
-	public function remember(string $key, int $ttl, Closure $fetcher): mixed
-	{
-		$data = $this->get($key);
-
-		if ($data === null)
-		{
-			$value = $fetcher();
-			$this->set($key, $value, $ttl);
-
-			return $value;
-		}
-
-		return $data;
 	}
 
 	public function delete(string $key): void

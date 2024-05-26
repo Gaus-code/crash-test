@@ -5,7 +5,7 @@ namespace Up\Cache;
 use Closure;
 use Up\Service\ConfigurationService;
 
-class RedisCache implements CacheInterface
+class RedisCache extends Cache
 {
 	private string $host;
 	private int $port;
@@ -26,21 +26,6 @@ class RedisCache implements CacheInterface
 	{
 		// TODO: Implement get() method.
 		return "Get key: $key\n";
-	}
-
-	public function remember(string $key, int $ttl, Closure $fetcher): mixed
-	{
-		// TODO: Implement remember() method.
-		$data = $this->get($key);
-
-		if ($data === null)
-		{
-			$value = $fetcher();
-			$this->set($key, $value, $ttl);
-			return $value;
-		}
-
-		return $data;
 	}
 
 	public function delete(string $key): void
