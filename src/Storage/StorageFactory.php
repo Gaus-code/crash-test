@@ -6,11 +6,20 @@ class StorageFactory
 {
 	public static function create(StorageType $type): StorageInterface
 	{
-		return match ($type)
+		$className = $type->getClassName();
+
+		if (!class_exists($className))
 		{
-			StorageType::MemoryStorage => new MemoryStorage(),
-			StorageType::FileStorage => new FileStorage(),
-			StorageType::RedisStorage => new RedisStorage(),
-		};
+			throw new \InvalidArgumentException("$className doesn't exist");
+		}
+
+		$reflectionClass = new \ReflectionClass($className);
+
+		if (!$reflectionClass->implementsInterface(StorageInterface::class))
+		{
+			throw new \InvalidArgumentException("$className doesn't implement StorageInterface");
+		}
+
+		return $reflectionClass->newInstance();
 	}
 }
