@@ -3,14 +3,17 @@
 namespace Up\Cache;
 
 use Closure;
+use Up\Storage\StorageFactory;
+use Up\Storage\StorageInterface;
+use Up\Storage\StorageType;
 
 class Cache
 {
 	protected StorageInterface $storage;
 
-	public function __construct(StorageInterface $storage)
+	public function __construct(StorageType $storageType)
 	{
-		$this->storage = $storage;
+		$this->storage = StorageFactory::create($storageType);
 	}
 	public function set(string $key, mixed $value, int $ttl): void
 	{

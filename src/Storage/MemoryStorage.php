@@ -1,6 +1,6 @@
 <?php
 
-namespace Up\Cache;
+namespace Up\Storage;
 
 class MemoryStorage implements StorageInterface
 {

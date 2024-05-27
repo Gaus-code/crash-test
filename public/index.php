@@ -2,22 +2,20 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/../boot.php';
 
-$fileStorage = new \Up\Cache\FileStorage();
-$redisStorage = new \Up\Cache\RedisStorage();
-$memoryStorage = new \Up\Cache\MemoryStorage();
-
 //try FileCache
-$fileCache = new Up\Cache\Cache($fileStorage);
-$fileCache->set('eleven', 'hehehe', 5);
+$storageType = \Up\Storage\StorageType::FileStorage;
 
-$fileCache->remember('remember', 120, function () {
-	return 'new remember';
+$cache = new Up\Cache\Cache($storageType);
+
+$cache->set('super_key', 'super_value', 3600);
+$cache->remember('super_remember', 3600, function () {
+	return 'super_value_for_super_remember';
 });
 
-$fileCache->deleteAll();
-$value = $fileCache->get('remember');
+$cache->deleteAll();
+$value = $cache->get('super_key');
+$remember = $cache->get('super_remember');
 
-$value2 = $fileCache->get('eleven');
 echo $value ?? 'null';
 echo '<br>';
-echo  $value2 ?? 'null';
+echo $remember ?? 'null';
