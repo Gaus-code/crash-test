@@ -2,29 +2,22 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/../boot.php';
 
-//file
-$cache = new \Up\Cache\FileCache();
+$fileStorage = new \Up\Cache\FileStorage();
+$redisStorage = new \Up\Cache\RedisStorage();
+$memoryStorage = new \Up\Cache\MemoryStorage();
 
-$cache->set('eleven', 'hehehe', 5);
-$cache->set('twelve', 'Sad_hehehe', 5);
+//try FileCache
+$fileCache = new Up\Cache\Cache($fileStorage);
+$fileCache->set('eleven', 'hehehe', 5);
 
-$value1 = $cache->get('eleven');
-$value2 = $cache->get('twelve');
+$fileCache->remember('remember', 120, function () {
+	return 'new remember';
+});
 
-//$cache->deleteAll();
-$cache->delete('eleven');
-$cache->delete('twelve');
-echo $value1 ?? 'null';
+$fileCache->deleteAll();
+$value = $fileCache->get('remember');
+
+$value2 = $fileCache->get('eleven');
+echo $value ?? 'null';
 echo '<br>';
-echo $value2 ?? 'null';
-
-
-//redis
-$cache2 = new \Up\Cache\RedisCache();
-
-$cache2->set('hello', 'world', 2024);
-$redisValue = $cache2->get('hello');
-echo '<br>';
-echo $redisValue;
-
-$cache2->delete($redisValue);
+echo  $value2 ?? 'null';

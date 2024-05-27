@@ -2,18 +2,16 @@
 
 namespace Up\Cache;
 
-use Closure;
 use Up\Service\ConfigurationService;
 
-class FileCache extends Cache
+class FileStorage implements StorageInterface
 {
-	public static string $cacheDir;
+	private static string $cacheDir;
 
 	public function __construct()
 	{
 		self::$cacheDir = ConfigurationService::option('file_storage.FILE_PATH');
 	}
-
 	public function set(string $key, mixed $value, int $ttl): void
 	{
 		$hash = sha1($key);
@@ -72,20 +70,6 @@ class FileCache extends Cache
 			foreach (glob(self::$cacheDir . '*') as $file)
 			{
 				unlink($file);
-			}
-		}
-	}
-	public function cleanup(): void
-	{
-		// TODO: set list of allowed classes
-		$currentTime = time();
-		foreach (glob(self::$cacheDir . '*') as $file)
-		{
-			$data = unserialize(file_get_contents($file), ['allowed_classes' => false]);
-			if ($currentTime > $data['ttl'])
-			{
-				unlink($file);
-				echo "Cleanup: $file\n";
 			}
 		}
 	}

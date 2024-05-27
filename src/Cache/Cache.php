@@ -3,24 +3,43 @@
 namespace Up\Cache;
 
 use Closure;
-abstract class Cache
+
+class Cache
 {
-	abstract public function set(string $key, mixed $value, int $ttl): void;
-	abstract public function get(string $key): mixed;
+	protected StorageInterface $storage;
+
+	public function __construct(StorageInterface $storage)
+	{
+		$this->storage = $storage;
+	}
+	public function set(string $key, mixed $value, int $ttl): void
+	{
+		$this->storage->set($key, $value, $ttl);
+	}
+	public function get(string $key): mixed
+	{
+		return $this->storage->get($key);
+	}
 	public function remember(string $key, int $ttl, Closure $fetcher): mixed
 	{
-		$data = $this->get($key);
+		$data = $this->storage->get($key);
 
 		if ($data === null)
 		{
 			$value = $fetcher();
-			$this->set($key, $value, $ttl);
+			$this->storage->set($key, $value, $ttl);
 
 			return $value;
 		}
 
 		return $data;
 	}
-	abstract public function delete(string $key): void;
-	abstract public function deleteAll(): void;
+	public function delete(string $key): void
+	{
+		$this->storage->delete($key);
+	}
+	public function deleteAll(): void
+	{
+		$this->storage->deleteAll();
+	}
 }

@@ -2,11 +2,10 @@
 
 namespace Up\Cache;
 
-use Closure;
-
-class MemoryCache extends Cache
+class MemoryStorage implements StorageInterface
 {
 	private static array $cache = [];
+
 	public function set(string $key, mixed $value, int $ttl): void
 	{
 		self::$cache[$key] = [
@@ -42,16 +41,5 @@ class MemoryCache extends Cache
 	public function deleteAll(): void
 	{
 		self::$cache = [];
-	}
-
-	public function cleanup(): void
-	{
-		foreach (self::$cache as $key => $data)
-		{
-			if (time() < $data['ttl'])
-			{
-				$this->delete($key);
-			}
-		}
 	}
 }
